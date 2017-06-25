@@ -50,8 +50,7 @@ connection.connect(function (err) {
         throw err;
     //console.log("Connected!");
     console.log("Connected as id " + connection.threadId);
-    //showProduct();
-    //searchId();
+    showProduct();
 });
 
 
@@ -64,49 +63,50 @@ function showProduct(){
         //console.log(results);
         //console.log(results[0].id);
 
-       // for (const i = 0; 1 < results.length; i++) {
-          //console.log(results[i].id);
-          // console.log(results[i].id + " | " + results[i].product_name + " | " + results[i].department_name + " | " + results[i].price + " | " + results[i].stock_quanity + " | " + results[i].autographed);
-         // var choiceArray = [];
-          //console.log("id: " + results[i].id + " | " + "Product Name: " + results[i].product_name + " | " + "Price: "+ results[i].price);
-          //console.log("------------------------------------------------------------");
+       for (var i = 0; i < results.length; i++) { //MAKE SURE IT IS AN 'i' NOT 1!!!
           //console.log(results);
-        //}
-        //return choiceArray;
-        var choicesArray = [];
-        for (var i =0; i < results.length; i++) {
-            choicesArray.push("Product Name: " + results[i].product_name);
-            }
-            return choicesArray;
+          //console.log(results[i].id);
+          //console.log(results[i].id + " | " + results[i].product_name + " | " + results[i].department_name + " | " + results[i].price + " | " + results[i].stock_quanity + " | " + results[i].autographed);
+          console.log("id: " + results[i].id + " | " + "Product Name: " + results[i].product_name + " | " + "Price: "+ results[i].price);
+          console.log("------------------------------------------------------------");
+        }
+        searchId();
     });
 
 
 }
-showProduct();
-/*
+//showProduct();
+
 function searchId() {
   inquirer.prompt([
         {
-         type   : "input",
          name   : "id",
-         message: "What is the ID of the product you are looking for?"
-         //validate: function(value) {
-           /!* if (isNaN(value) === false) {
-                return true;
+         type   : "input",
+         message: "What is the ID of the product you are looking for?",
+         validate: function(value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
             }
-            return false;
-            }*!/
-         },
+        },
+
       {
          name: "quantity",
          type: "input",
-         message: "How many units of the product they would like to buy"
+         message: "How many units of the product they would like to buy",
+         validate: function(value) {
+              if (isNaN(value) === false) {
+                  return true;
+              }
+              return false;
+            }
          }
-  ]).then(function (answer) {
+  ])/*.then(function (answer) {
         // if (answer.id ===)
-  });
+  });*/
         //console.log(inquirer.name[0]);
- }*/
+ }
 
 
 
