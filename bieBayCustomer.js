@@ -66,16 +66,36 @@ function showProduct(){
        for (var i = 0; i < results.length; i++) { //MAKE SURE IT IS AN 'i' NOT 1!!!
           //console.log(results);
           //console.log(results[i].id);
-          //console.log(results[i].id + " | " + results[i].product_name + " | " + results[i].department_name + " | " + results[i].price + " | " + results[i].stock_quanity + " | " + results[i].autographed);
-          console.log("id: " + results[i].id + " | " + "Product Name: " + results[i].product_name + " | " + "Price: "+ results[i].price);
-          console.log("------------------------------------------------------------");
+          console.log("id: " + results[i].id + " | " + "Product: " + results[i].product_name + " | " + "Price: "+ results[i].price + " | " + "Autographed: (1-yes 0-no) " + results[i].autographed);
+          //console.log("id: " + results[i].id + " | " + "Product Name: " + results[i].product_name + " | " + "Price: "+ results[i].price);
+          console.log("----------------------------------------------------------------------------------------------------------");
         }
         search();
     });
 
 
 }
-//showProduct();
+
+function startStop(results) {
+    inquirer.prompt([
+        {
+            name: "next",
+            type: "confirm",
+            message: "Want to buy more?"
+        }
+    ]).then(function (response) {
+        //console.log(response);
+        if (response.next === true) {
+            search();
+
+        }
+        else {
+            console.log("Came back soon!");
+        }
+    });
+
+}
+
 function search() {
   inquirer.prompt([
         {
@@ -128,11 +148,9 @@ function search() {
 // it will check if the store has enough of the product to meet the customer's request.
 
 function check(answer) {
-    var answerId = parseInt(answer.id);
-    //console.log(answerId);
 
     connection.query("SELECT id, stock_quantity, price FROM products WHERE ?",[{id: answer.id}], function (err, results){
-        //add in the where for it to only look for the id!!!!!! 
+        //add in the where for it to only look for the id!!!!!!
 
         if (err) throw err;
 
@@ -148,48 +166,96 @@ function check(answer) {
 
         for (var i = 0; i < results.length; i++) {
 
-            var quantityHave = results[i].stock_quantity;
-            var idHave = results[i].id;
-
+            quantityHave = results[i].stock_quantity;
+            idHave = results[i].id;
+            price =results[i].price;
+            //console.log("price ",price);
             //console.log("QH", quantityHave);
+            //console.log("ID", idHave);
+            //
         }//end of for loop
-
-
             if (quantityHave < answer.quantity) {
-                console.log("Insufficient quantity.");
-                console.log("answer ", answer.quantity);
+                console.log("Insufficient quantity - " + quantityHave + " currently in stock");
+                /*console.log("answer ", answer.quantity);
                 console.log("stock ", quantityHave);
-                console.log("ID", idHave);
+                console.log("ID", idHave);*/
+                //startStop();
+                restart();
             }
-
-
             else if (quantityHave >= answer.quantity) {
                 console.log("Happy to assist you in this order");
-                console.log("answer ", answer.quantity);
+                /*console.log("answer ", answer.quantity);
                 console.log("stock ", quantityHave);
-                console.log("ID", idHave);
+                console.log("ID", idHave);*/
+                total();
+                purchase();
+
             }
             else {
-                console.log("error")
+                console.log("Incorrect ID");
+                search();
             }
+
+
+        function total() {
+            var sum = parseInt(answer.quantity) * price;
+            console.log("TOTAL: $", sum);
+
+        }
+
     });//end of connect.query
+
+    function left(){
+        var quantityLeft = quantityHave - parseInt(answer.quantity);
+        //console.log("quantity left ", quantityLeft);
+        connection.query("UPDATE products SET stock_quantity = ? WHERE ?",[{stock_quantity: quantityLeft}, {id: answer.id}], function (err, results){
+            if (err) throw err;
+
+
+        })
+    }
 
 }//end of check function
 
+function purchase() {
+    inquirer.prompt([
+        {
+            name: "buy",
+            type: "confirm",
+            message: "Would you like to make this purchase?",
 
-//insert into table
-/*connection.query("INSERT INTO `products` SET `product_name` = 'Mock3' ", function (err, result) {
-    if (err) throw err;
-    console.log("Insert Mock");
-});*/
+        }
+    ]).then(function (answer) {
+       // console.log(answer);
+        if (answer.buy === true) {
+            console.log("Thank you for your purchase")
+            startStop();
+        }
+        else {
+            console.log("Come back soon!");
+            startStop();
+        }
+    });
 
-/*
-connection.query("UPDATE `products` SET `product_name` = 'Mock' ", function (err, result) {
- if (err) throw err;
- console.log("Insert Mock");
- });
+}
 
-connection.query("UPDATE `products` SET `department_name` = 'Mock3' ", function (err, result) {
-    if (err) throw err;
-    console.log("Insert Mock2");
-});*/
+
+function restart() {
+    inquirer.prompt([
+        {
+            name: "restart",
+            type: "confirm",
+            message: "Would you like enter a new quantity?",
+
+
+        }
+    ]).then(function (answer) {
+        if (answer.restart === true) {
+            search();
+        }
+        else {
+            startStop();
+        }
+    });
+
+}
