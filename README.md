@@ -1,6 +1,6 @@
 # bieBay
 
-Customer View (Minimum Requirement)
+Customer View
 
 Created a MySQL Database called bieBay.
 Then create a Table inside of that database called products.
