@@ -1,34 +1,34 @@
 /*Challenge #1: Customer View (Minimum Requirement)
-Create a MySQL Database called bieBay.
-Then create a Table inside of that database called products.
-The products table should have each of the following columns:
+ Create a MySQL Database called bieBay.
+ Then create a Table inside of that database called products.
+ The products table should have each of the following columns:
 
-item_id (unique id for each product)
-product_name (Name of product)
-department_name
-price (cost to customer)
-stock_quantity (how much of the product is available in stores)
-autographed (boolean)
+ item_id (unique id for each product)
+ product_name (Name of product)
+ department_name
+ price (cost to customer)
+ stock_quantity (how much of the product is available in stores)
+ autographed (boolean)
 
-Populate this database with around 10 different products. (i.e. Insert "mock"
-data rows into this database and table).
+ Populate this database with around 10 different products. (i.e. Insert "mock"
+ data rows into this database and table).
 
-Then create a Node application called bieBayCustomer.js. Running this
-application will first display all of the items available for sale.
-Include the ids, names, and prices of products for sale.                                                                                                                                                                                             The app should then prompt users with two messages.
+ Then create a Node application called bieBayCustomer.js. Running this
+ application will first display all of the items available for sale.
+ Include the ids, names, and prices of products for sale.                                                                                                                                                                                             The app should then prompt users with two messages.
 
-The first should ask them the ID of the product they would like to buy.
-The second message should ask how many units of the product they would like
-to buy.
-Once the customer has placed the order, your application should check if
-your store has enough of the product to meet the customer's request.
+ The first should ask them the ID of the product they would like to buy.
+ The second message should ask how many units of the product they would like
+ to buy.
+ Once the customer has placed the order, your application should check if
+ your store has enough of the product to meet the customer's request.
 
-If not, the app should log a phrase like Insufficient quantity!, and then prevent the order from going through.
-However, if your store does have enough of the product, you should fulfill
-the customer's order.
+ If not, the app should log a phrase like Insufficient quantity!, and then prevent the order from going through.
+ However, if your store does have enough of the product, you should fulfill
+ the customer's order.
 
-This means updating the SQL database to reflect the remaining quantity.
-Once the update goes through, show the customer the total cost of their purchase. */
+ This means updating the SQL database to reflect the remaining quantity.
+ Once the update goes through, show the customer the total cost of their purchase. */
 
 var mysql = require("mysql");
 var inquirer = require("inquirer");
@@ -46,7 +46,7 @@ var connection = mysql.createConnection({
 
 //checking connection of mysql
 connection.connect(function (err) {
-   if (err)
+    if (err)
         throw err;
     //console.log("Connected!");
     console.log("Connected as id " + connection.threadId);
@@ -63,12 +63,12 @@ function showProduct(){
         //console.log(results);
         //console.log(results[0].id);
 
-       for (var i = 0; i < results.length; i++) { //MAKE SURE IT IS AN 'i' NOT 1!!!
-          //console.log(results);
-          //console.log(results[i].id);
-          console.log("id: " + results[i].id + " | " + "Product: " + results[i].product_name + " | " + "Price: "+ results[i].price + " | " + "Autographed: (1-yes 0-no) " + results[i].autographed);
-          //console.log("id: " + results[i].id + " | " + "Product Name: " + results[i].product_name + " | " + "Price: "+ results[i].price);
-          console.log("----------------------------------------------------------------------------------------------------------");
+        for (var i = 0; i < results.length; i++) { //MAKE SURE IT IS AN 'i' NOT 1!!!
+            //console.log(results);
+            //console.log(results[i].id);
+            console.log("id: " + results[i].id + " | " + "Product: " + results[i].product_name + " | " + "Price: "+ results[i].price + " | " + "Autographed: (1-yes 0-no) " + results[i].autographed);
+            //console.log("id: " + results[i].id + " | " + "Product Name: " + results[i].product_name + " | " + "Price: "+ results[i].price);
+            console.log("----------------------------------------------------------------------------------------------------------");
         }
         search();
     });
@@ -97,12 +97,12 @@ function startStop(results) {
 }
 
 function search() {
-  inquirer.prompt([
+    inquirer.prompt([
         {
-         name   : "id",
-         type   : "input",
-         message: "What is the ID of the product you are looking for?",
-         validate: function(value) {
+            name   : "id",
+            type   : "input",
+            message: "What is the ID of the product you are looking for?",
+            validate: function(value) {
                 if (isNaN(value) === false) {
                     return true;
                 }
@@ -110,37 +110,37 @@ function search() {
             }
         },
 
-      {
-         name: "quantity",
-         type: "input",
-         message: "How many units of the product they would like to buy",
-         validate: function(value) {
-              if (isNaN(value) === false) {
-                  return true;
-              }
-              return false;
+        {
+            name: "quantity",
+            type: "input",
+            message: "How many units of the product they would like to buy",
+            validate: function(value) {
+                if (isNaN(value) === false) {
+                    return true;
+                }
+                return false;
             }
-         }
-  ]).then(function (answer) {
+        }
+    ]).then(function (answer) {
 
-      connection.query("SELECT ? FROM products", {
-          id: answer.item,
-          //product_name: answer.product_name,
-          //department_name: answer.department_name,
-          //price: answer.price,
-          stock_quantity: answer.stock_quantity,
-          //autographed: answer.autographed
-          },
+        connection.query("SELECT ? FROM products", {
+                id: answer.item,
+                //product_name: answer.product_name,
+                //department_name: answer.department_name,
+                //price: answer.price,
+                stock_quantity: answer.stock_quantity,
+                //autographed: answer.autographed
+            },
 
-          function(err) {
-              if (err) throw err;
-             //console.log(answer);
-              check(answer);
-          }
+            function(err) {
+                if (err) throw err;
+                //console.log(answer);
+                check(answer);
+            }
 
-      ); //end of query
+        ); //end of query
 
-  });//end of then function
+    });//end of then function
 
 }//end of search ID
 
@@ -160,7 +160,7 @@ function check(answer) {
         //console.log(answer);
         //console.log(typeof(answer));
         //console.log(answer.quantity);
-       //console.log("answer id ",answer.id);
+        //console.log("answer id ",answer.id);
 
 
 
@@ -174,27 +174,27 @@ function check(answer) {
             //console.log("ID", idHave);
             //
         }//end of for loop
-            if (quantityHave < answer.quantity) {
-                console.log("Insufficient quantity - " + quantityHave + " currently in stock");
-                /*console.log("answer ", answer.quantity);
-                console.log("stock ", quantityHave);
-                console.log("ID", idHave);*/
-                //startStop();
-                restart();
-            }
-            else if (quantityHave >= answer.quantity) {
-                console.log("Happy to assist you in this order");
-                /*console.log("answer ", answer.quantity);
-                console.log("stock ", quantityHave);
-                console.log("ID", idHave);*/
-                total();
-                purchase();
+        if (quantityHave < answer.quantity) {
+            console.log("Insufficient quantity - " + quantityHave + " currently in stock");
+            /*console.log("answer ", answer.quantity);
+             console.log("stock ", quantityHave);
+             console.log("ID", idHave);*/
+            //startStop();
+            restart();
+        }
+        else if (quantityHave >= answer.quantity) {
+            console.log("Happy to assist you in this order");
+            /*console.log("answer ", answer.quantity);
+             console.log("stock ", quantityHave);
+             console.log("ID", idHave);*/
+            total();
+            purchase();
 
-            }
-            else {
-                console.log("Incorrect ID");
-                search();
-            }
+        }
+        else {
+            console.log("Incorrect ID");
+            search();
+        }
 
 
         function total() {
@@ -226,7 +226,7 @@ function purchase() {
 
         }
     ]).then(function (answer) {
-       // console.log(answer);
+        // console.log(answer);
         if (answer.buy === true) {
             console.log("Thank you for your purchase")
             startStop();
