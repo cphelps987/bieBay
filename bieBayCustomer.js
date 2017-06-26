@@ -70,14 +70,13 @@ function showProduct(){
           console.log("id: " + results[i].id + " | " + "Product Name: " + results[i].product_name + " | " + "Price: "+ results[i].price);
           console.log("------------------------------------------------------------");
         }
-        searchId();
+        search();
     });
 
 
 }
 //showProduct();
-
-function searchId() {
+function search() {
   inquirer.prompt([
         {
          name   : "id",
@@ -102,12 +101,80 @@ function searchId() {
               return false;
             }
          }
-  ])/*.then(function (answer) {
-        // if (answer.id ===)
-  });*/
-        //console.log(inquirer.name[0]);
- }
+  ]).then(function (answer) {
 
+      connection.query("SELECT ? FROM products", {
+          id: answer.item,
+          //product_name: answer.product_name,
+          //department_name: answer.department_name,
+          //price: answer.price,
+          stock_quantity: answer.stock_quantity,
+          //autographed: answer.autographed
+          },
+
+          function(err) {
+              if (err) throw err;
+             //console.log(answer);
+              check(answer);
+          }
+
+      ); //end of query
+
+  });//end of then function
+
+}//end of search ID
+
+//Once the customer has placed the order,
+// it will check if the store has enough of the product to meet the customer's request.
+
+function check(answer) {
+    var answerId = parseInt(answer.id);
+    //console.log(answerId);
+
+    connection.query("SELECT id, stock_quantity, price FROM products WHERE ?",[{id: answer.id}], function (err, results){
+        //add in the where for it to only look for the id!!!!!! 
+
+        if (err) throw err;
+
+        //console.log ("SQ \n", results); //make sure you do the right tick for the new line
+        //console.log(typeof (results));
+        //console.log (results[1].stock_quantity);
+        //console.log(answer);
+        //console.log(typeof(answer));
+        //console.log(answer.quantity);
+       //console.log("answer id ",answer.id);
+
+
+
+        for (var i = 0; i < results.length; i++) {
+
+            var quantityHave = results[i].stock_quantity;
+            var idHave = results[i].id;
+
+            //console.log("QH", quantityHave);
+        }//end of for loop
+
+
+            if (quantityHave < answer.quantity) {
+                console.log("Insufficient quantity.");
+                console.log("answer ", answer.quantity);
+                console.log("stock ", quantityHave);
+                console.log("ID", idHave);
+            }
+
+
+            else if (quantityHave >= answer.quantity) {
+                console.log("Happy to assist you in this order");
+                console.log("answer ", answer.quantity);
+                console.log("stock ", quantityHave);
+                console.log("ID", idHave);
+            }
+            else {
+                console.log("error")
+            }
+    });//end of connect.query
+
+}//end of check function
 
 
 //insert into table
